@@ -1,4 +1,3 @@
-#from posixpath import join
 import subprocess
 import glob, os, re
 from typing import Sequence
@@ -40,8 +39,3 @@ file.close()
 
 # Use list to create ffmpeg video
 subprocess.call([ffmpeg,'-r', '25', '-f', 'concat', '-safe', '0', '-i', os.path.join(output_dir,"list.txt"), '-c:v', 'libx264', '-vf', 'fps=25',  'out.mp4'])
-
-
-#my_frame = 3
-#subprocess.call([ffmpeg, '-r', '10', '-i', 'frame%03d.png' % my_frame,
-#    ['-r',  'ntsc', 'movie%03d.mpg' % my_frame])
