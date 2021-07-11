@@ -1,22 +1,21 @@
 import subprocess
-import glob, os, re
-from typing import Sequence
-import getopt, sys
+import glob, os, re, getopt, sys
 
 output_dir = os.getcwd()
 output_file = 'output.mp4'
+file_type = "*.png"
 subdirectory_key = 'alpha'
 
 # Commandline usage of the script
 def usage():
-    print ("Usage: -d 'directory' -o 'output file' -s 'sub directory key'")
+    print ("Usage: -d 'directory' -o 'output file' -s 'subdirectory key' -t 'file type'")
     sys.exit(2)
 
 # Returns a list of images from the input directory
 def get_list_of_files(dir):
     file_list = []
     os.chdir(dir)  # FIX THIS! Ugly
-    image_list = glob.glob("*.png")
+    image_list = glob.glob(file_type)
     os.chdir(output_dir)
     image_list.sort(key=lambda var:[int(x) if x.isdigit() else x for x in re.findall(r'[^0-9]|[0-9]+', var)]) # Sort list by numbers
     for file in image_list:
@@ -27,8 +26,8 @@ def get_list_of_files(dir):
 argumentList = sys.argv[1:]
  
 # Input options 
-options = "hd:o:s:"
-long_options = ["Help", "Directory=", "Output=", "SubDirKey:"]
+options = "hd:o:s:t:"
+long_options = ["Help", "Directory=", "Output=", "SubDirKey=", "Filetype="]
  
 try:
     # Parsing argument
@@ -52,7 +51,10 @@ try:
 
         elif currentArgument in ("-s", "--SubDirKey"):
             subdirectory_key = currentValue
-             
+
+        elif currentArgument in ("-t", "--FileType"):
+            file_type = currentValue
+
 except getopt.error as err:
     # output error, and return with an error code
     print (str(err))
@@ -79,6 +81,10 @@ for dir in sequences:
             tmp_media_file.write("file '"+item+"'\n")
 
 tmp_media_file.close()
+
+if(os.path.getsize('list.txt') <= 0): 
+    print("Error: No files found matching type '" + file_type + "'")
+    sys.exit(2)
 
 # Use list.txt to create ffmpeg video
 subprocess.call(['ffmpeg','-r', '25', '-f', 'concat', '-safe', '0', '-i', \
