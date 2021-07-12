@@ -14,9 +14,10 @@ def usage():
 # Returns a list of images from the input directory
 def get_list_of_files(dir):
     file_list = []
-    os.chdir(dir)  # FIX THIS! Ugly
-    image_list = glob.glob(file_type)
-    os.chdir(output_dir)
+    #os.chdir(dir)  # FIX THIS! Ugly
+    print(os.path.join(dir,file_type))
+    image_list = glob.glob(os.path.join(dir,file_type))
+    #os.chdir(output_dir)
     image_list.sort(key=lambda var:[int(x) if x.isdigit() else x for x in re.findall(r'[^0-9]|[0-9]+', var)]) # Sort list by numbers
     for file in image_list:
         file_list.append(os.path.join(dir,file))
